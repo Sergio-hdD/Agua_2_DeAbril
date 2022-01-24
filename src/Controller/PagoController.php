@@ -8,6 +8,7 @@ use App\Repository\PagoRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -38,6 +39,25 @@ class PagoController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            
+            $comprobante = $form->get('comprobante')->getData();
+            if ($comprobante) {
+                $originalFilenameMono = pathinfo($comprobante->getClientOriginalName(), PATHINFO_FILENAME);
+                $fechaActual = new DateTime('now');
+                $newFilenameMono = 'comprobante_pago_fecha' . $fechaActual->format('d-m-Y') . '.' .$comprobante->guessExtension();
+                
+                try {
+                    $comprobante->move(
+                        $this->getParameter('constancias_pago_directory'),//constancias_pago_directory configurado en el services.yarm
+                        $newFilenameMono
+                    );
+                    $pago->setComprobante($newFilenameMono);
+                } catch (FileException $e) {
+                    $this->addFlash('danger', 'Ocurrió un error inesperado al cargar el archivo');
+                    // ... handle exception if something happens during file upload
+                }
+            }
+
             $pago->setCreatedAt(new DateTime('now'));
 
             $entityManager->persist($pago);
