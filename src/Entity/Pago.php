@@ -18,14 +18,34 @@ class Pago
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255 ,nullable=true)
      */
-    private $comprobante;
+    private $nombreDeComprobante;
 
     /**
-     * @ORM\Column(type="boolean", nullable=true)
+     * @ORM\Column(type="string", length=255 ,nullable=true)
      */
-    private $aprobado;
+    private $numeroDeComprobante;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $importe;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $numeroDeCuota;
+   
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $estado;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $causaDeRechazo;
 
     /* COMPOS COMUNES A TODAS LAS ENTITYS */
     /**
@@ -34,9 +54,9 @@ class Pago
      */
     private $userCreator;
 
-        /**
+    /**
      * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(name="user_creator",nullable=true)
+     * @ORM\JoinColumn(name="user_updater",nullable=true)
      */
     private $userUpdater;
 
@@ -53,34 +73,83 @@ class Pago
 
     public function __construct()
     {
-        $this->fecha = new \DateTime('now');
-        $this->aprobado = false;
+        $this->estado = 'A revisar';
+        $this->causaDeRechazo = "";
     }
+
     public function getId(): ?int
     {
         return $this->id;
     }
     
-    public function getComprobante(): ?string
+    public function getNombreDeComprobante(): ?string
     {
-        return $this->comprobante;
+        return $this->nombreDeComprobante;
     }
 
-    public function setComprobante(string $comprobante): self
+    public function setNombreDeComprobante(string $nombreDeComprobante): self
     {
-        $this->comprobante = $comprobante;
+        $this->nombreDeComprobante = $nombreDeComprobante;
 
         return $this;
     }
 
-    public function getAprobado(): ?bool
+    public function getNumeroDeComprobante(): ?string
     {
-        return $this->aprobado;
+        return $this->numeroDeComprobante;
     }
 
-    public function setAprobado(?bool $aprobado): self
+    public function setNumeroDeComprobante(?string $numeroDeComprobante): self
     {
-        $this->aprobado = $aprobado;
+        $this->numeroDeComprobante = $numeroDeComprobante;
+
+        return $this;
+    }
+
+    public function getImporte(): ?float
+    {
+        return $this->importe;
+    }
+
+    public function setImporte(?float $importe): self
+    {
+        $this->importe = $importe;
+
+        return $this;
+    }
+
+    public function getNumeroDeCuota(): ?int
+    {
+        return $this->numeroDeCuota;
+    }
+
+    public function setNumeroDeCuota(?int $numeroDeCuota): self
+    {
+        $this->numeroDeCuota = $numeroDeCuota;
+
+        return $this;
+    }
+
+    public function getEstado(): ?string
+    {
+        return $this->estado;
+    }
+
+    public function setEstado(string $estado): self
+    {
+        $this->estado = $estado;
+
+        return $this;
+    }
+    
+    public function getCausaDeRechazo(): ?string
+    {
+        return $this->causaDeRechazo;
+    }
+
+    public function setCausaDeRechazo(string $causaDeRechazo): self
+    {
+        $this->causaDeRechazo = $causaDeRechazo;
 
         return $this;
     }

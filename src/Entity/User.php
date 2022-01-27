@@ -122,6 +122,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
+     * Devuelve si tiene asignado algun role especifico, se usa en el controller
+     */
+    public function hasRole($role)
+    {
+        return \in_array($role, $this->getRoles());
+    }
+    
+
+    /**
      * @see PasswordAuthenticatedUserInterface
      */
     public function getPassword(): string

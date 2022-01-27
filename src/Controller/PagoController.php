@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Pago;
 use App\Form\PagoType;
+use App\Form\PagoEditAdminType;
 use App\Repository\PagoRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,8 +24,16 @@ class PagoController extends AbstractController
      */
     public function index(PagoRepository $pagoRepository): Response
     {
+        $pagos = "";
+        $user = $this->getUser();
+        if ($user->hasRole ('ROLE_ADMIN')) {
+            $pagos = $pagoRepository->findAll();
+        }else{
+            $pagos = $pagoRepository->findBy(['userCreator' => $user]);
+        }
+
         return $this->render('pago/index.html.twig', [
-            'pagos' => $pagoRepository->findAll(),
+            'pagos' => $pagos,
         ]);
     }
 
@@ -39,27 +48,10 @@ class PagoController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            
-            $comprobante = $form->get('comprobante')->getData();
-            if ($comprobante) {
-                $originalFilenameMono = pathinfo($comprobante->getClientOriginalName(), PATHINFO_FILENAME);
-                $fechaActual = new DateTime('now');
-                $newFilenameMono = 'comprobante_pago_fecha' . $fechaActual->format('d-m-Y') . '.' .$comprobante->guessExtension();
-                
-                try {
-                    $comprobante->move(
-                        $this->getParameter('constancias_pago_directory'),//constancias_pago_directory configurado en el services.yarm
-                        $newFilenameMono
-                    );
-                    $pago->setComprobante($newFilenameMono);
-                } catch (FileException $e) {
-                    $this->addFlash('danger', 'Ocurrió un error inesperado al cargar el archivo');
-                    // ... handle exception if something happens during file upload
-                }
-            }
 
+            $this->formarYSetaerNombreDeArchivo($form, $pago);
             $pago->setCreatedAt(new DateTime('now'));
-
+            //dd($pago);
             $entityManager->persist($pago);
             $entityManager->flush();
 
@@ -72,6 +64,26 @@ class PagoController extends AbstractController
         ]);
     }
 
+    public function formarYSetaerNombreDeArchivo($form, Pago $pago)
+    {
+        $nombreDeComprobante = $form->get('nombreDeComprobante')->getData();
+        if ($nombreDeComprobante) {
+            $originalFilenameMono = pathinfo($nombreDeComprobante->getClientOriginalName(), PATHINFO_FILENAME);
+            $fechaActual = new DateTime('now');
+            $newFilenameMono = 'comp_' . $fechaActual->format('d_m_Y_H_i_s') . '.' .$nombreDeComprobante->guessExtension();
+            
+            try {
+                $nombreDeComprobante->move(
+                    $this->getParameter('constancias_pago_directory'),//constancias_pago_directory configurado en el services.yarm
+                    $newFilenameMono
+                );
+                $pago->setNombreDeComprobante($newFilenameMono);
+            } catch (FileException $e) {
+                $this->addFlash('danger', 'Ocurrió un error inesperado al cargar el archivo');
+                // ... handle exception if something happens during file upload
+            }
+        }
+    } 
     /**
      * @Route("/{id}", name="pago_show", methods={"GET"})
      */
@@ -91,6 +103,32 @@ class PagoController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->formarYSetaerNombreDeArchivo($form, $pago);
+
+            $pago->setUserUpdater($this->getUser());
+            $pago->setCreatedAt(new DateTime('now'));
+            $entityManager->flush();
+
+            return $this->redirectToRoute('pago_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('pago/edit.html.twig', [
+            'pago' => $pago,
+            'form' => $form,
+        ]);
+    }
+/**
+     * @Route("/{id}/edit_admin", name="pago_edit_admin", methods={"GET", "POST"})
+     */
+    public function editAdmin(Request $request, Pago $pago, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(PagoEditAdminType::class, $pago);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if($form->get('causaDeRechazo')->getData() == null || $pago->getEstado() != 'Rechazado'){
+                $pago->setCausaDeRechazo('');    
+            }
             $pago->setUserUpdater($this->getUser());
             $pago->setCreatedAt(new DateTime('now'));
             $entityManager->flush();

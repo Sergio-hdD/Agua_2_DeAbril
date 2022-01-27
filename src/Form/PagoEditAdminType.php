@@ -11,7 +11,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 
-class PagoType extends AbstractType
+class PagoEditAdminType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -32,20 +32,20 @@ class PagoType extends AbstractType
                     11 => 11,
                     12 => 12
                 ],
-            ])        
-            ->add('nombreDeComprobante', FileType::class, [
-                'label'=>'Selecione el comprobante de Pago',
-                'allow_file_upload'=>true,
-                'by_reference'=>false,     
-                'mapped' => false,
-                'required' => false,
-                'constraints' => [
-                    new File([ 
-                    'mimeTypesMessage' => "Tipo de archivo invalido, debe ser .PDF o una imagen"]
-                )]
             ])
-            ->add('numeroDeComprobante', null, ['label' => 'Ingrese el número de comprobante (opcional)'])
-            ->add('importe', null, ['label' => 'Ingrese el importe (opcional)'])          
+            ->add('estado', ChoiceType::class, [
+                'choices'  => [
+                    'A revisar' => 'A revisar',
+                    'Aprobado' => 'Aprobado',
+                    'Rechazado' => 'Rechazado'
+                ],
+            ])
+            ->add('causaDeRechazo', TextareaType::class, [
+                'required' => false,
+                'attr' => ['class' => 'tinymce'],
+            ])
+            ->add('numeroDeComprobante')
+            ->add('importe')
         ;
     }
 

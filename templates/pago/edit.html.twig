@@ -4,10 +4,35 @@
 
 {% block body %}
     <h1>Edit Pago</h1>
-
-    {{ include('pago/_form.html.twig', {'button_label': 'Update'}) }}
+    <p> {{ pago.userCreator }} </p>
+    Para ver el comprobante cargado <a href="{{ asset('uploads/pagos/constancias/' ~ pago.nombreDeComprobante) }}" target="_black">Clic aquí </a>
+    {{ include('pago/_form.html.twig', {'button_label': 'Editar'}) }}
 
     <a href="{{ path('pago_index') }}">back to list</a>
 
     {{ include('pago/_delete_form.html.twig') }}
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            
+            if($("#pago_edit_admin_estado").val() == 'Rechazado'){
+                $('#pago_edit_admin_causaDeRechazo').show();
+            }else{
+                $('#pago_edit_admin_causaDeRechazo').hide();
+            }
+
+            $("#pago_edit_admin_estado").on('change', function(e) {
+                if($("#pago_edit_admin_estado").val() == 'Rechazado'){
+                  $('#pago_edit_admin_causaDeRechazo').show();
+                }else{
+                    $('#pago_edit_admin_causaDeRechazo').hide();
+                }
+            });
+            
+
+        });
+
+    </script>
 {% endblock %}
