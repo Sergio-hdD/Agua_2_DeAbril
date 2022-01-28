@@ -51,3 +51,7 @@ import '../vendor/fontawesome-free/css/all.min.css'
 // start the Stimulus application
 import './bootstrap';
 */
+
+import bsCustomFileInput from 'bs-custom-file-input';
+
+bsCustomFileInput.init();
