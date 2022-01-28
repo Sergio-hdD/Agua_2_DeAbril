@@ -3,52 +3,21 @@
 {% block title %}Pago{% endblock %}
 
 {% block content %}
-    <h1>Pago</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>N° de cuota</th>
-                <td>{{ pago.numeroDeCuota }}</td>
-            </tr>
-            <tr>
-                <th>N° de comprobante</th>
-                <td>{{ pago.numeroDeComprobante }}</td>
-            </tr>
-            <tr>
-                <th>importe</th>
-                <td>{{ pago.importe }}</td>
-            </tr>
-            <tr>
-                <th>Comprobante</th>
-                <td> <a href="{{ asset('uploads/pagos/constancias/' ~ pago.nombreDeComprobante) }}" target="_black">Ver doc</a> </td>
-            </tr>
-            <tr>
-                <th>Estado</th>
-                <td>{{ pago.estado }}</td>
-            </tr>
-            {% if pago.estado == 'Rechazado' %}
-            <tr>
-                <th>Motivo del rechazo</th>
-                <td>{{ pago.causaDeRechazo }}</td>
-            </tr>
-            {% endif %}
-            
-            <tr>
-                <th>Creado el</th>
-                <td>{{ pago.createdAt ? pago.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+    {# Incluye el menu global para el objeto #}
+        {% set titulo_pagina = 'Pago' %}
+        {% set objeto_nombre_path = 'pago' %}
+        {% include 'menu_objeto_global.html.twig' %}
+	{# fin menu #}
 
-    {% if is_granted('ROLE_ADMIN') %}
-        <br>
-        <a href="{{ path('pago_edit_admin', {'id': pago.id}) }}">editar</a>                    
-    {% elseif pago.estado == 'A revisar' %}
-        <br>
-        <a href="{{ path('pago_edit', {'id': pago.id}) }}">editar</a>
-    {% endif %}
-    {% if is_granted('ROLE_ADMIN') or pago.estado == 'A revisar' %}
-        {{ include('pago/_delete_form.html.twig') }}
-    {% endif %}
+    <div class="row">
+        {% set content = include('pago/shows/_show.html.twig')    %}
+            {% include "card_content.html.twig" with {
+            'appicon': 'fa-dashboard',
+            'title':'Pago',
+            'detalle':content,
+            } 
+        %}
+    </div>
+    
 {% endblock %}
