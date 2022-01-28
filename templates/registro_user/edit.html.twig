@@ -1,13 +1,25 @@
-{% extends 'base.html.twig' %}
+{% extends 'base.app.html.twig' %}
 
-{% block title %}Edit User{% endblock %}
+{% block title %}Editar Pago{% endblock %}
 
-{% block body %}
-    <h1>Edit User</h1>
+{% block content %}
 
-    {{ include('registro_user/_form.html.twig', {'button_label': 'Update'}) }}
+    {# Incluye el menu global para el objeto #}
+        {% set titulo_pagina = 'Editar usuario' %}
+        {% set objeto_nombre_path = 'registro_user' %}
+        {% include 'menu_objeto_global.html.twig' %}
+	{# fin menu #}
 
-    <a href="{{ path('registro_user_index') }}">back to list</a>
+    <div class="row">
+        {% set content = include('registro_user/_form.html.twig')    %}
+            {% include "card_content.html.twig" with {
+            'appicon': 'fa-dashboard',
+            'title':'Editar usuario',
+            'detalle':content,
+            } 
+        %}
+    </div>
 
     {{ include('registro_user/_delete_form.html.twig') }}
+
 {% endblock %}
