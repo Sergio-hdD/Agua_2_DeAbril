@@ -26,7 +26,7 @@ class PagoController extends AbstractController
     {
         $pagos = "";
         $user = $this->getUser();
-        if ($user->hasRole ('ROLE_ADMIN')) {
+        if ($user->hasRole('ROLE_ADMIN')) {
             $pagos = $pagoRepository->findAll();
         }else{
             $pagos = $pagoRepository->findBy(['userCreator' => $user]);

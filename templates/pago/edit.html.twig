@@ -1,14 +1,28 @@
-{% extends 'base.html.twig' %}
+{% extends 'base.app.html.twig' %}
 
-{% block title %}Edit Pago{% endblock %}
+{% block title %}Editar Pago{% endblock %}
 
-{% block body %}
-    <h1>Edit Pago</h1>
-    <p> {{ pago.userCreator }} </p>
-    Para ver el comprobante cargado <a href="{{ asset('uploads/pagos/constancias/' ~ pago.nombreDeComprobante) }}" target="_black">Clic aquí </a>
-    {{ include('pago/_form.html.twig', {'button_label': 'Editar'}) }}
+{% block content %}
 
-    <a href="{{ path('pago_index') }}">back to list</a>
+    {# Incluye el menu global para el objeto #}
+        {% set titulo_pagina = 'Editar Pago' %}
+        {% set objeto_nombre_path = 'pago' %}
+        {% include 'menu_objeto_global.html.twig' %}
+	{# fin menu #}
+
+    <div class="shadow p-3 mb-4 bg-white font-weight-bold rounded text-mda-negro border-bottom border-5 border-primary"><i class="fas fa-user pr-2"></i>
+        {{ pago.userCreator }} - Para ver el comprobante cargado <a href="{{ asset('uploads/pagos/constancias/' ~ pago.nombreDeComprobante) }}" target="_black">Clic aquí.</a>
+    </div>
+
+    <div class="row">
+        {% set content = include('pago/_form.html.twig')    %}
+            {% include "card_content.html.twig" with {
+            'appicon': 'fa-dashboard',
+            'title':'Nuevo Pago',
+            'detalle':content,
+            } 
+        %}
+    </div>
 
     {{ include('pago/_delete_form.html.twig') }}
 
@@ -25,13 +39,12 @@
 
             $("#pago_edit_admin_estado").on('change', function(e) {
                 if($("#pago_edit_admin_estado").val() == 'Rechazado'){
-                  $('#pago_edit_admin_causaDeRechazo').show();
+                    $('#pago_edit_admin_causaDeRechazo').show();
                 }else{
                     $('#pago_edit_admin_causaDeRechazo').hide();
                 }
             });
             
-
         });
 
     </script>

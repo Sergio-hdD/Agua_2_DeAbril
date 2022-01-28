@@ -1,9 +1,14 @@
-{% extends 'base.html.twig' %}
+{% extends 'base.app.html.twig' %}
 
-{% block title %}Pago index{% endblock %}
+{% block title %}Pagos{% endblock %}
 
-{% block body %}
-    <h1>Pago index</h1>
+{% block content %}
+
+    {# Incluye el menu global para el objeto #}
+        {% set titulo_pagina = 'Pagos' %}
+        {% set objeto_nombre_path = 'pago' %}
+        {% include 'menu_objeto_global.html.twig' %}
+	{# fin menu #}
 
     <table class="table">
         <thead>
@@ -14,7 +19,7 @@
                 <th>Comprobante</th>
                 <th>Estado</th>
                 <th>Creado el</th>
-                <th>actions</th>
+                <th>Opciones</th>
             </tr>
         </thead>
         <tbody>
@@ -41,11 +46,16 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="6">no records found</td>
+                <td colspan="6">No se encontraron registros.</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('pago_new') }}">Create new</a>
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% include "datatable.multifilter.js.twig" %}  
+{% endblock %}
+

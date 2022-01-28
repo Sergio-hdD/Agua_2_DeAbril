@@ -1,0 +1,100 @@
+{#
+
+Incluir este archivo en los 4 templates [ index, new, edit, show ] de cada objeto
+la inclusion en el index y new son iguales
+la inclusion en el show y edit son iguales
+
+** Importante **
+Para visualizar los botones de editar y eliminar el objeto debe contar con el
+campo 'finalizado' y este debe estar en false y al mismo tiempo para el usuario
+final debe ser el mismo que cargo el registro o el usuario debe contar con permisos
+admin del objeto
+
+
+** Variables a pasar **
+titulo_pagina = [opcional] titulo de la pagina
+objeto = [opcional] el objeto hidratado con la entidad ej. $registroBaia
+objeto_nombre_path = [obligatoria] el nombre del path comun ej. registro_baia
+role_admin_objeto = [obligatoria] el role que tiene super permisos sobre ese objeto ej. ROLE_BAIA_ADMIN
+eliminar = [opcional] default true - true si permite mostrar el boton borrar
+cualquiera_puede_exportar = [opcional] default false - true si cualquiera puede exportar a excel (debe estar definido en el index)
+#}
+
+{% if role_admin_objeto is not defined %}
+{% set role_admin_objeto = 'ROLE_INDEFINIDO_SIN_NOMBRE' %}
+{% endif %}
+{% if titulo_pagina is not defined %}
+{% set titulo_pagina = app.request.attributes.get('_route') %}
+{% endif %}
+{% if show_new_button is not defined %}
+{% set show_new_button = true %}
+{% endif %}
+<div class="row">
+	<div class="col-lg-12">
+		<h2>{{ titulo_pagina }}</h2>
+	</div>
+</div>
+<div class="row">
+	<div class="col-lg-6 col-md-6 col-xs-12">
+		<div class="btn btn-group p-0 mb-3">
+			<a href="{{ path(objeto_nombre_path ~ '_index') }}" class="btn btn-info">Volver</a>
+			{% if objeto is defined and objeto.id is not null %}
+			{% if (objeto.finalizado is defined and not objeto.finalizado) and (objeto.createdBy == app.user or (is_granted(role_admin_objeto) or is_granted('ROLE_ADMIN'))) %}
+			<a href="{{ path(objeto_nombre_path ~ '_confirmar', {id: objeto.id }) }}" class="btn btn-success">
+				Enviar Solicitud
+			</a>
+			<a href="{{ path(objeto_nombre_path ~ '_edit', {'id': objeto.id}) }}" class="btn btn-warning">
+				Editar
+			</a>
+			{% if eliminar is not defined or eliminar == true %}
+			<button class="btn btn-danger" onclick="$('#form-delete').submit();">Eliminar</button>
+			<form method="post" id="form-delete" action="{{ path(objeto_nombre_path ~ '_delete', {'id': objeto.id}) }}"
+				onsubmit="return confirm('Esta seguro que desea eliminar el registro ?');">
+				<input type="hidden" name="_method" value="DELETE">
+				<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ objeto.id) }}">
+			</form>
+			{% endif  %}
+			{% endif  %}
+
+			{% if (is_granted('ROLE_FORMULARIO_PRODUCTORES_ADMIN_EDITAR') and objeto.finalizado is defined and objeto.finalizado ) and objeto.aprobado is defined and objeto.aprobado == 0 %}
+			<a href="{{ path(objeto_nombre_path ~ '_aprobar', {'id': registro_agroecologico.id}) }}"
+				class="btn btn-danger">Aprobar</a>
+			{% elseif ((objeto.finalizado is defined and objeto.finalizado ) and objeto.aprobado is defined and objeto.aprobado == true) and objeto.aprobado ==1 and objeto.finalizado == 1 %}
+
+			{{ ' <span class="btn btn-success" ;"><b>Aprobado</b></span>' }}
+			{% endif  %}
+			{% if (objeto.finalizado is defined and objeto.finalizado ) and exportar_pdf is defined and exportar_pdf == true %}
+			<a href="{{ path(objeto_nombre_path ~ '_pdf', {'id': objeto.id}) }}" target="_blank"
+				class="btn btn-secondary">
+				Exportar PDF
+			</a>
+			{% endif  %}
+
+			{% if (bitacora is defined and bitacora and (is_granted('ROLE_BAIA_ADMIN')   or is_granted('ROLE_DONACION_ADMIN') or is_granted('ROLE_BPA_ADMIN') or is_granted('ROLE_ADMIN') or is_granted('ROLE_BACKEND')) )  %}
+
+				<a href="{{ path('bitacora_new',{'entityid': objeto.id, 'entity':objeto_nombre_path}) }}"
+					class=" btn btn-warning">
+					Bitácora
+				</a>
+
+				<a href="{{ path(objeto_nombre_path ~ '_pdf', {'id': objeto.id}) }}" target="_blank"
+					class="btn btn-secondary">
+					Exportar PDF
+				</a>
+
+			{% endif  %}
+
+			{% elseif (show_new_button and app.request.attributes.get('_route') != objeto_nombre_path ~ '_new') %}
+				<a class="btn btn-success" href="{{ path(objeto_nombre_path ~ '_new') }}">Nuevo</a>
+			{% endif %}
+
+			{% if (registro_baia_insumos_solicitante is defined and registro_baia_insumos_solicitante)  %}
+				<a href="{{ path('registro_baia_insumo_solicitable_new',{'entityid': objeto.id, 'entity':objeto_nombre_path, 'detalle':detalle}) }}"
+					class=" btn btn-warning">
+					Registro Insumo Bahia
+				</a>
+			{% endif  %}
+
+		</div>
+	</div>
+</div>

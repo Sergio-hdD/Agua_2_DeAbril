@@ -1,8 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends 'base.app.html.twig' %}
 
 {% block title %}Pago{% endblock %}
 
-{% block body %}
+{% block content %}
     <h1>Pago</h1>
 
     <table class="table">
@@ -40,8 +40,6 @@
             </tr>
         </tbody>
     </table>
-
-    <a href="{{ path('pago_index') }}">back to list</a>
 
     {% if is_granted('ROLE_ADMIN') %}
         <br>
