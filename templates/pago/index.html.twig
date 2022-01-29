@@ -32,7 +32,7 @@
                                 <td>{{ pago.numeroDeComprobante }}</td>
                                 <td>{{ pago.importe }}</td>
                                 <td>
-                                    <a href="{{ asset('uploads/pagos/constancias/' ~ pago.nombreDeComprobante) }}" target="_black">Ver doc</a>
+                                    <button type="submit" class="btn btn-primary btn-xs" id="btn-submit-ver-" onclick="verComprobante('{{ pago.nombreDeComprobante }}')">Ver comp.</button>
                                 </td>
                                 <td>{{ pago.estado }}</td>
                                 <td>{{ pago.createdAt ? pago.createdAt|date('Y-m-d H:i:s') : '' }}</td>
@@ -47,6 +47,7 @@
                                     {% endif %}
                                 </td>
                             </tr>
+                            {{ include('pago/ver_comprobante_en_modal.html.twig') }}       
                         {% else %}
                             <tr>
                                 <td colspan="6">No se encontraron registros.</td>

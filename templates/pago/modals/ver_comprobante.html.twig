@@ -1,0 +1,17 @@
+<div class="modal fade" id="modal-ver-comprobante" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:#D4E6F1">
+                <h3 class="modal-title" id="exampleModalLabel">Comprobante actual.</h3>
+            </div>
+            <div class="modal-body" style="background-color:#F9E79F">
+                <div>
+                    <img id="img_comprobante" style="height: 95%; width: 95%;" src="{{ asset('uploads/pagos/constancias/' ~ pago.nombreDeComprobante) }}">
+                </div>
+            </div>
+            <div class="modal-footer" style="background-color:#D4E6F1">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

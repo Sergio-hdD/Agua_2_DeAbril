@@ -1,0 +1,38 @@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+
+    //Función llamada desde un item del index y recibe como parámetro el nombre de comprobante del objeto pago que corresponde el item
+    function verComprobante(nombreDeComprobante){
+        $('#modal-ver-comprobante').modal('show');//abro el modal
+        //armo y cambio el src de la imagen que está el en modal
+        //document.getElementById("img_comprobante").src=`/uploads/pagos/constancias/${nombreDeComprobante}`; //así con JS normal
+        $("#img_comprobante").attr("src",`/uploads/pagos/constancias/${nombreDeComprobante}`); //así con jQuery
+    }
+
+    $(document).ready(function() {
+        //--- bloque Solo para el template editar pago
+        if($("#pago_edit_admin_estado").val() == 'Rechazado'){
+            $('#pago_edit_admin_causaDeRechazo').show();
+        }else{
+            $('#pago_edit_admin_causaDeRechazo').hide();
+        }
+
+        $("#pago_edit_admin_estado").on('change', function(e) {
+            if($("#pago_edit_admin_estado").val() == 'Rechazado'){
+                $('#pago_edit_admin_causaDeRechazo').show();
+            }else{
+                $('#pago_edit_admin_causaDeRechazo').hide();
+            }
+        });
+        //--- FIN bloque Solo para el template editar pago  
+        
+        $("#btn-submit-ver-comprobante").on('click', function(e) {
+            $('#modal-ver-comprobante').modal('show');
+        
+            return false;
+        });
+        
+    });
+
+</script>

@@ -11,7 +11,7 @@
 	{# fin menu #}
 
     <div class="shadow p-3 mb-4 bg-white font-weight-bold rounded text-mda-negro border-bottom border-5 border-primary"><i class="fas fa-user pr-2"></i>
-        {{ pago.userCreator }} - Para ver el comprobante cargado <a href="{{ asset('uploads/pagos/constancias/' ~ pago.nombreDeComprobante) }}" target="_black">Clic aquí.</a>
+        {{ pago.userCreator }} - Para ver el comprobante cargado <button class="btn btn-primary btn-sm" id="btn-submit-ver-comprobante">Clic aquí</button>
     </div>
 
     <div class="row">
@@ -24,28 +24,7 @@
         %}
     </div>
 
-    {{ include('pago/_delete_form.html.twig') }}
+    {{ include('pago/_delete_form.html.twig') }}    
+    {{ include('pago/ver_comprobante_en_modal.html.twig') }}
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <script>
-        $(document).ready(function() {
-            
-            if($("#pago_edit_admin_estado").val() == 'Rechazado'){
-                $('#pago_edit_admin_causaDeRechazo').show();
-            }else{
-                $('#pago_edit_admin_causaDeRechazo').hide();
-            }
-
-            $("#pago_edit_admin_estado").on('change', function(e) {
-                if($("#pago_edit_admin_estado").val() == 'Rechazado'){
-                    $('#pago_edit_admin_causaDeRechazo').show();
-                }else{
-                    $('#pago_edit_admin_causaDeRechazo').hide();
-                }
-            });
-            
-        });
-
-    </script>
 {% endblock %}
