@@ -3,5 +3,86 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-  Home!
+
+  <!-- Search functionality -->
+  <div class='row'>
+    <div class="col-md-12">
+      <form>
+        <input class="form-control form-control-warning border border-primary" type="search" placeholder="Buscar..." aria-label="Search" id="search">
+      </form>
+    </div>
+  </div>
+  <div class="dropdown-divider"></div> 
+
+  <div id="search_section" class="d-flex row card-deck'">
+
+  	{% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
+    
+      {% include "/carditem.html.twig" with {
+                'appid': 'appformbaia',
+                'appicon': 'fa-form',
+                'order': '1',
+                'appnombre':'Pagos',
+                'appdetalle':'Banco para Abastecimiento de Insumos Agropecuarios (BAIA)</br>Consultas: baia@mda.gba.gob.ar
+                <div class="dropdown-divider"></div>
+                <a href="' ~ path('pago_new')  ~ '" class="btn btn-primary btn-block">Nueva Solicitud</a>
+                <a href="' ~ path('pago_index')  ~ '" class="btn btn-secondary btn-block ">Mis Solicitudes</a>
+                      '
+        } 
+      %}
+
+    {% endif %}
+
+    {% if is_granted('ROLE_ADMIN') %}
+
+      {% include "/carditem.html.twig" with {
+                'appid': 'appformbaia',
+                'appicon': 'fa-form',
+                'order': '2',
+                'appnombre':'Usuarios',
+                'appdetalle':'Banco para Abastecimiento de Insumos Agropecuarios (BAIA)</br>Consultas: baia@mda.gba.gob.ar
+                <div class="dropdown-divider"></div>
+                <a href="' ~ path('registro_user_new')  ~ '" class="btn btn-primary btn-block">Nueva Solicitud</a>
+                <a href="' ~ path('registro_user_index')  ~ '" class="btn btn-secondary btn-block ">Mis Solicitudes</a>
+                      '
+       } 
+      %}   
+
+    {% endif %}
+
+  </div>
+
+  	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+
+      $(document).ready(function() {
+        $('#search').keyup(function(){
+          search_text($(this).val());
+        });
+      
+        function search_text(value){
+          $('#search_section .card').each(function(){
+            var found = 'false';
+            $(this).each(function(){
+              if($(this).text().toLowerCase().indexOf(value.toLowerCase()) >= 0)
+              {
+                found = 'true';
+              }
+            });
+            if(found == 'true'){
+              $(this).parent().show() ;//.removeClass('d-none'); //.show()
+            }
+            else {
+              $(this).parent().hide(); //.addClass('d-none');// 
+            }
+          })
+          
+        }
+      });
+      
+    </script>
+
 {% endblock %}
+
+
