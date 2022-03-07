@@ -10,50 +10,52 @@
         {% include 'menu_objeto_global.html.twig' %}
 	{# fin menu #}
 
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table" id="datatable">
-                    <thead>
-                        <tr>
-                            <th>N° de cuota</th>
-                            <th>N° de comprobante</th>
-                            <th>Importe</th>
-                            <th>Comprobante</th>
-                            <th>Estado</th>
-                            <th>Creado el</th>
-                            <th>Opciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for pago in pagos %}
-                        <tr>
-                            <td>{{ pago.numeroDeCuota }}</td>
-                            <td>{{ pago.numeroDeComprobante }}</td>
-                            <td>{{ pago.importe }}</td>
-                            <td>
-                                <a href="{{ asset('uploads/pagos/constancias/' ~ pago.nombreDeComprobante) }}" target="_black">Ver doc</a>
-                            </td>
-                            <td>{{ pago.estado }}</td>
-                            <td>{{ pago.createdAt ? pago.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                            <td>
-                                <a href="{{ path('pago_show', {'id': pago.id}) }}">ver</a>
-                                {% if is_granted('ROLE_ADMIN') %}
-                                    <a href="{{ path('pago_edit_admin', {'id': pago.id}) }}">editar</a>                    
-                                {% elseif pago.estado == 'A revisar' %}
-                                    <a href="{{ path('pago_edit', {'id': pago.id}) }}">editar</a>
-                                {% else %}
-                                    -- 
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="6">No se encontraron registros.</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table" id="datatable">
+                        <thead>
+                            <tr>
+                                <th>N° de cuota</th>
+                                <th>N° de comprobante</th>
+                                <th>Importe</th>
+                                <th>Comprobante</th>
+                                <th>Estado</th>
+                                <th>Creado el</th>
+                                <th>Opciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for pago in pagos %}
+                            <tr>
+                                <td>{{ pago.numeroDeCuota }}</td>
+                                <td>{{ pago.numeroDeComprobante }}</td>
+                                <td>{{ pago.importe }}</td>
+                                <td>
+                                    <button type="submit" class="btn btn-primary btn-xs" id="btn-submit-ver-" onclick="verComprobante('{{ pago.nombreDeComprobante }}')">Ver comp.</button>
+                                </td>
+                                <td>{{ pago.estado }}</td>
+                                <td>{{ pago.createdAt ? pago.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                                <td>
+                                    <a href="{{ path('pago_show', {'id': pago.id}) }}">ver</a>
+                                    {% if is_granted('ROLE_ADMIN') %}
+                                        <a href="{{ path('pago_edit_admin', {'id': pago.id}) }}">editar</a>                    
+                                    {% elseif pago.estado == 'A revisar' %}
+                                        <a href="{{ path('pago_edit', {'id': pago.id}) }}">editar</a>
+                                    {% else %}
+                                        -- 
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {{ include('pago/ver_comprobante_en_modal.html.twig') }}       
+                        {% else %}
+                            <tr>
+                                <td colspan="6">No se encontraron registros.</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
